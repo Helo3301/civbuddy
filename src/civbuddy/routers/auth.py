@@ -32,13 +32,17 @@ async def get_current_user(request: Request) -> Optional[dict]:
 
 @router.post("/login")
 async def login(body: LoginRequest, response: Response):
+    # Trim surrounding whitespace — a trailing space from copy/paste is a common
+    # sign-on failure that otherwise looks identical to a wrong password.
+    username = body.username.strip()
+    password = body.password.strip()
     db = await get_db()
     try:
         rows = await db.execute_fetchall(
             "SELECT id, username, display_name, password_hash FROM users WHERE username = ?",
-            (body.username,),
+            (username,),
         )
-        if not rows or not bcrypt.verify(body.password, rows[0]["password_hash"]):
+        if not rows or not bcrypt.verify(password, rows[0]["password_hash"]):
             return JSONResponse({"error": "Invalid credentials"}, status_code=401)
 
         user = rows[0]

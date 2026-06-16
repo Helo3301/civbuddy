@@ -54,6 +54,12 @@ var App = {
         document.getElementById('tray-sound').addEventListener('click', function() {
             SoundManager.toggle();
         });
+        document.getElementById('btn-sign-off').addEventListener('click', function() {
+            SoundManager.play('doorslam');
+            fetch('/api/auth/logout', {method: 'POST'}).finally(function() {
+                window.location.href = '/';
+            });
+        });
     }
 };
 

@@ -7,6 +7,9 @@ from civbuddy.database import get_db, init_db
 
 
 async def create_user(username: str, password: str, display_name: str):
+    # Match the login path, which trims whitespace before verifying.
+    username = username.strip()
+    password = password.strip()
     await init_db()
     db = await get_db()
     try:
