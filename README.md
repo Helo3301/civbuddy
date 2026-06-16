@@ -40,6 +40,17 @@ systemctl --user enable --now civbuddy
 
 Access is restricted by `middleware/tailscale.py` to `100.*` (Tailscale), `10.*` / `192.168.*` (LAN), and loopback. Everything else gets a 403.
 
+### Exposing it publicly (Tailscale Funnel)
+
+Tailscale Funnel forwards the visitor's **real public IP**, which the tailnet
+allow-list rejects. To intentionally serve over a public Funnel, set
+`CIVBUDDY_ALLOW_FUNNEL=1` in the environment — this disables the IP gate so
+public visitors reach the login. Leave it unset for tailnet-only (the safe
+default).
+
+> ⚠️ With the gate open, the app's home-grown session auth is your only
+> protection on the public internet. Don't leave a Funnel up long-term.
+
 ## Roadmap
 
 - **Multi-player rotation** — `game_players(game_id, user_id, seat_order)` table + next-seat rotation, replacing the current "the other player" shortcut.
