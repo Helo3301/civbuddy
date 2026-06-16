@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CivBuddy</title>
+    <link rel="stylesheet" href="/css/98.css">
+    <link rel="stylesheet" href="/css/aim.css">
+    <link rel="stylesheet" href="/css/animations.css">
+</head>
+<body class="app-page">
+
+    <!-- Buddy List Window -->
+    <div class="window app-window focused" id="buddy-list-window">
+        <div class="title-bar">
+            <div class="title-bar-text">Buddy List</div>
+            <div class="title-bar-controls">
+                <button aria-label="Minimize" data-minimize="buddy-list-window"></button>
+                <button aria-label="Close" data-close="buddy-list-window"></button>
+            </div>
+        </div>
+        <div class="window-body" style="padding:0; display:flex; flex-direction:column; height:calc(100% - 22px);">
+            <div class="buddy-header">
+                <div class="running-man">🏃</div>
+                <div class="buddy-screen-name" id="my-screen-name">Loading...</div>
+            </div>
+            <div style="flex:1; overflow-y:auto;">
+                <div class="buddy-group">
+                    <div class="buddy-group-header" id="buddies-header">Buddies (0/0)</div>
+                    <div id="buddy-entries"></div>
+                </div>
+            </div>
+            <div class="status-selector">
+                <select id="status-select">
+                    <option value="online">Available</option>
+                    <option value="away">Away</option>
+                </select>
+            </div>
+            <div class="buddy-status-bar">
+                <span id="online-count">0 buddies online</span>
+                <span>🔊</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chat Window -->
+    <div class="window app-window" id="chat-window" style="display:none;">
+        <div class="title-bar">
+            <div class="title-bar-text" id="chat-title">Chat</div>
+            <div class="title-bar-controls">
+                <button aria-label="Minimize" data-minimize="chat-window"></button>
+                <button aria-label="Close" data-close="chat-window"></button>
+            </div>
+        </div>
+        <div class="window-body" style="padding:0;">
+            <div class="chat-container">
+                <div class="chat-messages" id="chat-messages"></div>
+                <div class="typing-indicator" id="typing-indicator"></div>
+                <div class="chat-toolbar">
+                    <button title="Bold"><b>B</b></button>
+                    <button title="Italic"><i>I</i></button>
+                    <button title="Underline"><u>U</u></button>
+                    <span style="border-left:1px solid #808080; margin:0 2px;"></span>
+                    <button title="Games" id="btn-open-saves">🎮 Games</button>
+                </div>
+                <div class="chat-input-area">
+                    <textarea id="chat-input" placeholder="Type a message..."></textarea>
+                    <button id="btn-send">Send</button>
+                </div>
+                <div class="chat-status-bar">
+                    <span>Warn Level: 0%</span>
+                    <span id="chat-buddy-status"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Save Games Window -->
+    <div class="window app-window" id="saves-window" style="display:none;">
+        <div class="title-bar">
+            <div class="title-bar-text">Civ 4 - Save Games</div>
+            <div class="title-bar-controls">
+                <button aria-label="Minimize" data-minimize="saves-window"></button>
+                <button aria-label="Close" data-close="saves-window"></button>
+            </div>
+        </div>
+        <div class="window-body" style="padding:0;">
+            <div class="saves-container">
+                <div class="saves-header">
+                    <select id="game-select"><option value="">-- Select Game --</option></select>
+                    <button id="btn-new-game">New Game</button>
+                </div>
+                <div class="your-turn-banner" id="your-turn-banner">
+                    🎺 It's YOUR turn! 🎺
+                </div>
+                <div class="saves-list">
+                    <table class="saves-table">
+                        <thead>
+                            <tr>
+                                <th>Turn</th>
+                                <th>Uploaded By</th>
+                                <th>File</th>
+                                <th>Size</th>
+                                <th>Date</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="saves-tbody"></tbody>
+                    </table>
+                </div>
+                <div class="upload-area" id="upload-area">
+                    <div>📁 Drop your save file here or <button id="btn-choose-file">Choose File</button></div>
+                    <input type="file" id="file-input" style="display:none;" accept=".CivBeyondSwordSave,.sav,.Civ4SavedGame">
+                    <div class="upload-progress" id="upload-progress">
+                        <progress id="upload-bar" max="100" value="0" style="width:100%"></progress>
+                        <span id="upload-status">Uploading...</span>
+                    </div>
+                </div>
+                <div class="saves-actions">
+                    <button id="btn-refresh-saves">Refresh</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Away Message Dialog -->
+    <div class="window app-window" id="away-dialog" style="display:none;">
+        <div class="title-bar">
+            <div class="title-bar-text">Away Message</div>
+            <div class="title-bar-controls">
+                <button aria-label="Close" data-close="away-dialog"></button>
+            </div>
+        </div>
+        <div class="window-body" style="padding:0;">
+            <div class="away-content">
+                <p style="margin:0 0 8px; font-size:11px;">Set your away message:</p>
+                <textarea id="away-message-input" placeholder="I'm away from my computer right now."></textarea>
+                <div class="away-buttons">
+                    <button id="btn-go-away">I'm Away</button>
+                    <button id="btn-come-back">I'm Back</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Game Dialog -->
+    <div class="window app-window" id="new-game-dialog" style="display:none;">
+        <div class="title-bar">
+            <div class="title-bar-text">New Civ 4 Game</div>
+            <div class="title-bar-controls">
+                <button aria-label="Close" data-close="new-game-dialog"></button>
+            </div>
+        </div>
+        <div class="window-body" style="padding:0;">
+            <div class="new-game-content">
+                <label style="font-size:11px;">Game Name:</label>
+                <input type="text" id="new-game-name" placeholder="e.g. Epic Marathon">
+                <div class="new-game-buttons">
+                    <button id="btn-create-game">Create</button>
+                    <button id="btn-cancel-game" data-close="new-game-dialog">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Taskbar -->
+    <div class="taskbar">
+        <button class="taskbar-btn active" data-window="buddy-list-window">
+            🏃 Buddy List
+        </button>
+        <button class="taskbar-btn" data-window="chat-window" id="taskbar-chat" style="display:none;">
+            💬 Chat
+        </button>
+        <button class="taskbar-btn" data-window="saves-window" id="taskbar-saves" style="display:none;">
+            🎮 Games
+        </button>
+        <div class="taskbar-spacer"></div>
+        <div class="taskbar-tray">
+            <span class="tray-icon" id="tray-sound" title="Toggle sounds">🔊</span>
+            <span class="tray-icon" id="tray-aim" title="CivBuddy">🏃</span>
+            <span class="tray-clock" id="tray-clock"></span>
+        </div>
+    </div>
+
+    <!-- Audio elements -->
+    <audio id="snd-dooropen" preload="auto" src="/sounds/dooropen.wav"></audio>
+    <audio id="snd-doorslam" preload="auto" src="/sounds/doorslam.wav"></audio>
+    <audio id="snd-imrcv" preload="auto" src="/sounds/imrcv.wav"></audio>
+    <audio id="snd-imsend" preload="auto" src="/sounds/imsend.wav"></audio>
+    <audio id="snd-newmail" preload="auto" src="/sounds/newmail.wav"></audio>
+
+    <script src="/js/sounds.js"></script>
+    <script src="/js/dragwindow.js"></script>
+    <script src="/js/websocket.js"></script>
+    <script src="/js/buddylist.js"></script>
+    <script src="/js/chatwindow.js"></script>
+    <script src="/js/presence.js"></script>
+    <script src="/js/savegames.js"></script>
+    <script src="/js/app.js"></script>
+</body>
+</html>

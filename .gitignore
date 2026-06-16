@@ -1,0 +1,14 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/
+
+# Runtime state — DO NOT COMMIT (contains password hashes, sessions, chat, save files)
+data/
+*.db
+*.db-wal
+*.db-shm
+
+# Env
+.env

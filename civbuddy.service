@@ -1,0 +1,16 @@
+[Unit]
+Description=CivBuddy - AOL-Style Chat + Civ 4 Save Trading
+After=network.target
+
+# Install as user service: cp civbuddy.service ~/.config/systemd/user/
+# systemctl --user enable civbuddy && systemctl --user start civbuddy
+
+[Service]
+Type=simple
+WorkingDirectory=/home/hestiasadmin/projects/civbuddy
+ExecStart=/home/hestiasadmin/projects/civbuddy/.venv/bin/python -m uvicorn civbuddy.main:app --host 0.0.0.0 --port 8000
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target

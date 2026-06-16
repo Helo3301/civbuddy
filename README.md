@@ -1,0 +1,54 @@
+# CivBuddy
+
+An AOL-Instant-Messenger-flavored companion for **Civilization 4: Beyond the Sword** play-by-email (PBEM) games. Dial up, watch your buddy list, trade save files, and get an old-school *"You've got mail!"* ping when it's your turn.
+
+Runs as a small FastAPI app on your tailnet/LAN. No cloud, no accounts you don't control.
+
+## What it does
+
+- **Buddy list + presence** — see who's online/away, set an away message.
+- **Chat** — AOL-style IM windows.
+- **Save trading = turn engine** — upload your `.CivBeyondSwordSave`, the turn flips to the next player automatically, and they get a WebSocket nudge to download and play.
+- **Turn log** — every upload/download is recorded per game.
+
+The app never parses the save file; it's a dumb, reliable pipe. Civ 4 already bakes the turn number and per-player passwords into the save, which is exactly what PBEM needs.
+
+## Status
+
+Works today for **2-player** games. Multi-player (3+) needs a game roster + seat-order rotation — see *Roadmap*.
+
+## Running it
+
+```bash
+cd civbuddy
+python -m venv .venv && . .venv/bin/activate
+pip install -e .
+
+# create players
+civbuddy-create-user
+
+# serve (binds 0.0.0.0:8000; access is gated to tailnet/LAN/loopback)
+python -m uvicorn civbuddy.main:app --host 0.0.0.0 --port 8000
+```
+
+Or install the included systemd user unit:
+
+```bash
+cp civbuddy.service ~/.config/systemd/user/
+systemctl --user enable --now civbuddy
+```
+
+Access is restricted by `middleware/tailscale.py` to `100.*` (Tailscale), `10.*` / `192.168.*` (LAN), and loopback. Everything else gets a 403.
+
+## Roadmap
+
+- **Multi-player rotation** — `game_players(game_id, user_id, seat_order)` table + next-seat rotation, replacing the current "the other player" shortcut.
+- Turn-timer nudges for the player who's holding things up.
+- "Download latest save" one-click.
+- Optional support for Civ 4's simultaneous-turns mode.
+
+## Notes
+
+- `data/` (SQLite DB with password hashes, sessions, chat, and uploaded saves) is gitignored — it's runtime state, not source.
+- Tech: FastAPI · aiosqlite · vanilla JS front-end · WebSockets.
+- Sound effects are nostalgia placeholders; swap in your own.
