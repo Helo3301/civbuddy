@@ -47,8 +47,33 @@ Access is restricted by `middleware/tailscale.py` to `100.*` (Tailscale), `10.*`
 - "Download latest save" one-click.
 - Optional support for Civ 4's simultaneous-turns mode.
 
+## Sounds (bring your own)
+
+No audio files ship with this repo. The dial-up / IM / "you've got mail"
+effects are AOL and Microsoft intellectual property and aren't licensed for
+redistribution, so committing them would mean publishing someone else's
+copyrighted work. CivBuddy loads sounds from `static/sounds/` at runtime
+instead — drop your own files in (the app runs silently if they're missing).
+See [`static/sounds/README.md`](static/sounds/README.md) for the exact
+filenames and where to source them legally.
+
+## Contributing
+
+Contributions welcome — fork it, add to it, send a PR. By contributing you
+agree your changes ship under the project's license (below). Please keep the
+existing copyright notices intact.
+
+## License
+
+[GNU GPL v3.0](LICENSE). You're free to use, modify, and distribute CivBuddy,
+including commercially — but any distributed version (including forks and
+derivatives) must also be released under the GPL with source available, and
+must preserve attribution. In short: build on it freely, keep it open, and
+credit the source.
+
+© 2026 Tim Allen (Helo3301).
+
 ## Notes
 
 - `data/` (SQLite DB with password hashes, sessions, chat, and uploaded saves) is gitignored — it's runtime state, not source.
 - Tech: FastAPI · aiosqlite · vanilla JS front-end · WebSockets.
-- Sound effects are nostalgia placeholders; swap in your own.
