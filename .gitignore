@@ -12,3 +12,8 @@ data/
 
 # Env
 .env
+
+# Audio — copyrighted (AOL/Microsoft) and not redistributable. Bring your own.
+# See static/sounds/README.md. Keep the manifest, ignore the actual files.
+*.wav
+*.mp3
